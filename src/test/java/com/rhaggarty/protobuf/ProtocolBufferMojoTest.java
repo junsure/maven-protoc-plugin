@@ -10,6 +10,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -31,7 +32,7 @@ public class ProtocolBufferMojoTest {
     public void setup() throws IllegalAccessException, NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
 
-        when(outputDirectory.isDirectory()).thenReturn(true);
+        when(outputDirectory.isFile()).thenReturn(false);
         when(sourceDirectory.isDirectory()).thenReturn(true);
 
         mojo = new ProtocolBufferMojo();
@@ -44,32 +45,32 @@ public class ProtocolBufferMojoTest {
         mojo.setOutputTypes(new String[] {"JAVA", "CPP"});
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void testExecuteEmptyExecutableThrowsIllegalArgException() throws Exception {
+    @Test (expected = MojoExecutionException.class)
+    public void testExecuteEmptyExecutableThrowsMojoExecException() throws Exception {
         setField(mojo, "executable", StringUtils.EMPTY);
         mojo.execute();
     }
     
-    @Test (expected = IllegalArgumentException.class)
-    public void testExecuteNullOutputDirectoryThrowsIllegalArgException() throws Exception {
+    @Test (expected = MojoExecutionException.class)
+    public void testExecuteNullOutputDirectoryThrowsMojoExecException() throws Exception {
         setField(mojo, "outputDirectory", null);
         mojo.execute();
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void testExecuteOutputDirectoryNotDirectoryThrowsIllegalArgException() throws Exception {
-        when(outputDirectory.isDirectory()).thenReturn(false);
+    @Test (expected = MojoExecutionException.class)
+    public void testExecuteOutputDirectoryIsFileThrowsMojoExecException() throws Exception {
+        when(outputDirectory.isFile()).thenReturn(true);
         mojo.execute();
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void testExecuteNullSourceDirectoryThrowsIllegalArgException() throws Exception {
+    @Test (expected = MojoExecutionException.class)
+    public void testExecuteNullSourceDirectoryThrowsMojoExecException() throws Exception {
         setField(mojo, "sourceDirectory", null);
         mojo.execute();
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void testExecuteSourceDirectoryNotDirectoryThrowsIllegalArgException() throws Exception {
+    @Test (expected = MojoExecutionException.class)
+    public void testExecuteSourceDirectoryNotDirectoryThrowsMojoExecException() throws Exception {
         when(sourceDirectory.isDirectory()).thenReturn(false);
         mojo.execute();
     }
