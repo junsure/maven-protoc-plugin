@@ -1,6 +1,5 @@
 package com.rhaggarty.protobuf;
 
-import com.rhaggarty.protobuf.type.ProtoOutputType;
 import java.io.File;
 import org.apache.commons.lang.Validate;
 import org.apache.maven.plugin.AbstractMojo;

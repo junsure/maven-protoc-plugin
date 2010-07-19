@@ -1,11 +1,11 @@
-package com.rhaggarty.protobuf.type;
+package com.rhaggarty.protobuf;
 
 import org.apache.commons.lang.Validate;
 
 /**
  * A representation of the available compiler output types.
  * 
- * @author rhaggarty
+ * @author Ryan Haggarty (ryanmh at gmail dot com)
  */
 public enum ProtoOutputType {
 
