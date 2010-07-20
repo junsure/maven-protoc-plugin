@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import org.apache.commons.lang.ArrayUtils;
+import java.util.Collections;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Before;
@@ -42,7 +42,7 @@ public class ProtocolBufferMojoTest {
         setField(mojo, "outputDirectory", outputDirectory);
         setField(mojo, "sourceDirectory", sourceDirectory);
 
-        mojo.setOutputTypes(new String[] {"JAVA", "CPP"});
+        mojo.setOutputTypes(Collections.singletonMap("JAVA", "."));
     }
 
     @Test (expected = MojoExecutionException.class)
@@ -75,9 +75,9 @@ public class ProtocolBufferMojoTest {
         mojo.execute();
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test (expected = MojoExecutionException.class)
     public void testExecuteEmptyOutputTypesThrowsIllegalArgException() throws Exception {
-        mojo.setOutputTypes(ArrayUtils.EMPTY_STRING_ARRAY);
+        mojo.setOutputTypes(Collections.EMPTY_MAP);
         mojo.execute();
     }
 

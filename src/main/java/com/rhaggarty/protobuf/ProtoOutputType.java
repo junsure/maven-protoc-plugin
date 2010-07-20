@@ -18,6 +18,10 @@ public enum ProtoOutputType {
         this.arg = arg;
     }
 
+    public String getArg() {
+        return arg;
+    }
+
     public static ProtoOutputType[] valuesOf(final String[] values) {
         Validate.notEmpty(values);
 

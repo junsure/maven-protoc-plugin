@@ -3,12 +3,15 @@ package com.rhaggarty.protobuf;
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-
+import org.codehaus.plexus.util.cli.Commandline;
 
 /**
  * Non-test entry point for maven-protoc-plugin.
@@ -32,13 +35,19 @@ public class ProtocolBufferMojo extends AbstractMojo {
     private File sourceDirectory;
 
     /** @parameter property="outputTypes" **/
-    private ProtoOutputType[] _outputTypes;
+    private Map<ProtoOutputType, String> _outputTypes;
 
     
     public void execute() throws MojoExecutionException {
         mavenFriendlyValidateArgs();
 
-        final Collection<File> files = findFiles();
+        final Collection<String> files = findFiles();
+        final Collection<String> args = getArgs();
+        final Commandline commandline = new Commandline(executable);
+        commandline.addArguments(files.toArray(new String[] {}));
+        commandline.addArguments(args.toArray(new String[] {}));
+        System.out.println(commandline.toString());
+        
         //outputDirectory.mkdirs();
     }
 
@@ -49,8 +58,11 @@ public class ProtocolBufferMojo extends AbstractMojo {
      * @throws IllegalArgumentException if any of the specified strings doesn't
      * map to a ProtoOutputType.
      */
-    public void setOutputTypes(final String[] outputTypes) {
-        _outputTypes = ProtoOutputType.valuesOf(outputTypes);
+    public void setOutputTypes(final Map<String, String> outputTypes) {
+        _outputTypes = new EnumMap<ProtoOutputType, String>(ProtoOutputType.class);
+        for (final Map.Entry<String, String> entry : outputTypes.entrySet()) {
+            _outputTypes.put(ProtoOutputType.valueOf(entry.getKey()), entry.getValue());
+        }
     }
 
     private void mavenFriendlyValidateArgs() throws MojoExecutionException {
@@ -71,7 +83,21 @@ public class ProtocolBufferMojo extends AbstractMojo {
         Validate.isTrue(sourceDirectory.isDirectory(), "Specified source directory not directory!");
     }
 
-    private Collection<File> findFiles() {
-        return Collections.unmodifiableCollection(FileUtils.listFiles(sourceDirectory, PROTO_FILE_EXTENSIONS, true));
+    private Collection<String> findFiles() {
+        final Collection<File> files = FileUtils.listFiles(sourceDirectory, PROTO_FILE_EXTENSIONS, true);
+        final Collection<String> filesAsStrings = new HashSet<String>(files.size());
+        for (final File file : files) {
+            filesAsStrings.add(file.toString());
+        }
+        return filesAsStrings;
+    }
+
+    private Collection<String> getArgs() {
+        final Collection<String> args = new LinkedHashSet<String>();
+        for (final Map.Entry<ProtoOutputType, String> outputType : _outputTypes.entrySet()) {
+            args.add(outputType.getKey() + "=" + outputType.getValue());
+        }
+
+        return args;
     }
 }
