@@ -9,8 +9,8 @@ import org.apache.commons.lang.Validate;
  */
 public enum ProtoOutputType {
 
-    JAVA("java_out"),
-    CPP("cpp_out");
+    JAVA("--java_out"),
+    CPP("--cpp_out");
 
     private final String arg;
 

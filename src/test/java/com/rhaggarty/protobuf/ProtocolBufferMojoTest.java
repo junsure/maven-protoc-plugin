@@ -39,7 +39,6 @@ public class ProtocolBufferMojoTest {
 
         // set defaults
         setField(mojo, "executable", "test-executable");
-        setField(mojo, "outputDirectory", outputDirectory);
         setField(mojo, "sourceDirectory", sourceDirectory);
 
         mojo.setOutputTypes(Collections.singletonMap("JAVA", "."));
@@ -51,18 +50,6 @@ public class ProtocolBufferMojoTest {
         mojo.execute();
     }
     
-    @Test (expected = MojoExecutionException.class)
-    public void testExecuteNullOutputDirectoryThrowsMojoExecException() throws Exception {
-        setField(mojo, "outputDirectory", null);
-        mojo.execute();
-    }
-
-    @Test (expected = MojoExecutionException.class)
-    public void testExecuteOutputDirectoryIsFileThrowsMojoExecException() throws Exception {
-        when(outputDirectory.isFile()).thenReturn(true);
-        mojo.execute();
-    }
-
     @Test (expected = MojoExecutionException.class)
     public void testExecuteNullSourceDirectoryThrowsMojoExecException() throws Exception {
         setField(mojo, "sourceDirectory", null);
