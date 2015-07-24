@@ -1,0 +1,1 @@
+This project is a simple plugin for maven that allows the user to compile sources using protoc.  Note that at present, protoc must be installed on the host system.
